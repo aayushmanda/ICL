@@ -23,48 +23,75 @@
 
 ---
 
-### Theorem 4
-**using initialization from assumpsion 3**
+### Theorem 4: Convergence of Gradient Flow for Linear Self-Attention
 
-Let $\sigma > 0$ be a parameter, and let $\Theta \in \mathbb{R}^{d\times d}$ be any matrix satisfying $\|\Theta \Theta^\top\|_F = 1$ and $\Theta \Lambda \neq 0_{d \times d}$. We assume
+### Initialization (Assumption 3)
+Let $\sigma > 0$ be a parameter, and let $\Theta \in \mathbb{R}^{d\times d}$ satisfy $|\Theta \Theta^\top|_F = 1$ and $\Theta \Lambda \neq 0_{d \times d}$. The parameters are initialized as:
 $$
 W_{PV}(0) = \sigma
 \begin{bmatrix}
 0_{d \times d} & 0_d \\
 0_d^\top & 1
-\end{bmatrix},
-\qquad
+\end{bmatrix}, \qquad
 W_{KQ}(0) = \sigma
 \begin{bmatrix}
 \Theta \Theta^\top & 0_d \\
 0_d^\top & 0
-\end{bmatrix}.
+\end{bmatrix}
 $$
 
-
-**and check and checking if theorem 4 if really holds.**
-
-Consider gradient flow of a linear self-attention network $f_{\mathrm{LSA}}$ defined in over the population loss. Suppose the initialization satisfies  with initialization scale $\sigma > 0$ satisfying $\sigma^2 \|\Gamma\|_{\mathrm{op}} \sqrt{d} < 2$, where
+### Statement
+Consider gradient flow of a linear self-attention network $f_{\mathrm{LSA}}$ over the population loss, using this initialization and scale $\sigma>0$ such that:
 $$
-\Gamma := \left(1 + \frac{1}{N}\right) \Lambda + \frac{1}{N} \operatorname{tr}(\Lambda) I_d \in \mathbb{R}^{d\times d}.
+\sigma^2 |\Gamma|_{\mathrm{op}} \sqrt{d} < 2
 $$
-Then gradient flow converges to a global minimum of the population loss~(8). Moreover, $W_{PV}$ and $W_{KQ}$ converge to $W_{PV}^*$ and $W_{KQ}^*$, respectively, where
+where
+$$
+\Gamma := \left(1 + \frac{1}{N}\right) \Lambda + \frac{1}{N} \operatorname{tr}(\Lambda) I_d \in \mathbb{R}^{d\times d}
+$$
 
-
-$W_{KQ}^* = 
+Then **gradient flow converges to a global minimum** of the population loss. Furthermore, $W_{PV}$ and $W_{KQ}$ converge to $W_{PV}^*$ and $W_{KQ}^*$ respectively, where:
+$$
+W_{KQ}^* =
+c^{-1}
 \begin{bmatrix}
-{(c\Gamma)}^{-1} & 0_{d} \\
+\Gamma^{-1} & 0_{d} \\
 0_{d}^\top & 0
-\end{bmatrix}$
+\end{bmatrix}
+$$
 
+$$
+W_{PV}^* =
+c
+\begin{bmatrix}
+0_{d \times d} & 0_{d} \\
+0_{d}^\top & 1
+\end{bmatrix}
+$$
+where the scalar
+$$
+c = \left[\mathrm{tr}\left(\Gamma^{-2}\right)\right]^{1/4}
+$$
+<!-- 
+### Key Points
 
+- The special initialization ensures the network is "balanced" for the proof.
+- The condition on $\sigma$ keeps the flow in a regime ensuring global convergence despite nonconvexity.
+- The form of the solution shows that after training, the learned parameters invert the covariance $\Gamma$ (generalizing OLS) and encode the solution in the bottom-right block (for the prediction). -->
 
-$W_{PV}^* = \begin{bmatrix}
-0_{d\times d} & 0_{d} \\
-0_{d}^\top & c
-\end{bmatrix}.$
+<!-- ### Markdown Table (for main result)
 
-here $c = [\operatorname{tr}(Γ^{−2})^{1/4}]$
+| Param | Formula |
+|-------|---------|
+| $W_{KQ}^*$ | $c^{-1} \begin{bmatrix} \Gamma^{-1} & 0_{d} \\ 0_{d}^\top & 0 \end{bmatrix}$ |
+| $W_{PV}^*$ | $c \begin{bmatrix} 0_{d\times d} & 0_{d} \\ 0_{d}^\top & 1 \end{bmatrix}$ |
+| $c$ | $c = \left[\mathrm{tr}(\Gamma^{-2})\right]^{1/4}$ |
+| $\Gamma$ | $\Gamma = \left(1 + \frac{1}{N}\right) \Lambda + \frac{1}{N} \mathrm{tr}(\Lambda) I_d$ | -->
+
+**This is the main convergence result (Thm 4) in the paper, and those are the exact block matrix forms for the converged self-attention weights.**  
+Let me know if you would like intuition or a code translation for $\Gamma$ and $c$!
+
+[1] https://github.com/aayushmanda/ICL
 
 
 
